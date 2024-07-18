@@ -1,0 +1,25 @@
+{
+  "name": "voosh_assignment_backend",
+  "version": "1.0.0",
+  "description": "Task Manager Application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Parshantrao/Voosh_assignment_backend.git"
+  },
+  "author": "Parshant",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Parshantrao/Voosh_assignment_backend/issues"
+  },
+  "homepage": "https://github.com/Parshantrao/Voosh_assignment_backend#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0",
+    "mongoose": "^8.5.1"
+  }
+}
