@@ -16,7 +16,7 @@ let app = express()
 // Middleware for handling sessions
 // CORS configuration
 app.use(cors({
-    origin: 'http://localhost:3001', // Replace with your frontend URL
+    origin: 'https://669bf16a710cf50f84257aad--spontaneous-moxie-416d00.netlify.app', // Replace with your frontend URL
     credentials: true
   }));
   
