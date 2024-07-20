@@ -15,10 +15,12 @@ let app = express()
 
 // Middleware for handling sessions
 // CORS configuration
+
 app.use(cors({
-    origin: '*', // Replace with your frontend URL
-    credentials: true
-  }));
+  origin: 'https://main--vooshfrontendassignment.netlify.app', // Replace with your actual frontend URL
+  credentials: true
+}));
+
   
   // Other middlewares and Passport setup
   app.use(express.json());
