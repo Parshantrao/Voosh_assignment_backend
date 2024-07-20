@@ -4,7 +4,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const GOOGLE_CLIENT_ID = "57223644186-rjdpouq8lmj9vss46c88gp8b7v4kjhdf.apps.googleusercontent.com"
 const GOOGLE_CLIENT_SECRET = "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"
-const CALLBACK_URL = "http://localhost:3000/auth/google/callback"
+const CALLBACK_URL = "https://voosh-assignment-backend-vv41.onrender.com/auth/google/callback"
 
 passport.use(new GoogleStrategy({
   clientID: GOOGLE_CLIENT_ID,
