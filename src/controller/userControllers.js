@@ -7,10 +7,10 @@ const secretKey = "./K4lp3d*((secretKEY($#//"
 
 const createUser = async function (req, res) {
     try {
+
         if (!validator.isValidRequestBody(req.body)) {
             return res.status(400).send({ status: false, message: "Provide user's data" })
         }
-
         let { first_name, last_name, email, password } = req.body
 
         //   Validation for null and undefined values
@@ -53,7 +53,7 @@ const createUser = async function (req, res) {
                 return res.status(400).send({ status: false, message: err.message })
             }
 
-            const data = await UserModel.create({ first_name, last_name, email, password: hash }).lean()
+            const data = await UserModel.create({ first_name, last_name, email, password: hash })
 
             return res.status(201).send({ status: true, message: "User created successfuly", data: data })
         });
@@ -67,39 +67,56 @@ const createUser = async function (req, res) {
 const userLogin = async function (req, res) {
     try {
         if (!validator.isValidRequestBody(req.body)) {
-            return res.status(400).send({ status: false, message: "Provide user's data" })
+            return res.status(400).send({ status: false, message: "Provide user's data." })
         }
 
         let { email, password } = req.body
 
         //   Validation for null and undefined values
         if (!validator.isValid(email)) {
-            return res.status(400).send({ status: false, message: "email field is required" })
+            return res.status(400).send({ status: false, message: "email field is required." })
         }
         if (!validator.isValid(password)) {
-            return res.status(400).send({ status: false, message: "password field is required" })
+            return res.status(400).send({ status: false, message: "password field is required." })
         }
 
         const existedUser = await UserModel.findOne({ email })
         if (!existedUser) {
-            return res.status(404).send({ status: false, message: 'User does not exist' })
+            return res.status(404).send({ status: false, message: 'Email is not registered.' })
         }
 
         const passwordMatched = await bcrypt.compare(password, existedUser.password);
 
         if (passwordMatched) {
             let token = jwt.sign({
-                id:existedUser._id,
-                email:email
-              }, secretKey , { expiresIn: '1day' });
+                id: existedUser._id,
+                email: email
+            }, secretKey, { expiresIn: '1day' });
 
-              return res.status(200).send({status:true, message:"Loged in successfuly", token})
+
+            res.cookie('token', token)
+            // .send({status: true, message: "Loged in successfuly"});
+
+            return res.status(200).send({ status: true, message: "Logged in successfuly", data: existedUser._id })
         }
-        else{
-            return res.status(400).send({status:false, message:"Ivalid credentials"})
+        else {
+            return res.status(400).send({ status: false, message: "Invalid credentials" })
         }
     }
     catch (err) {
+        return res.status(500).send({ status: false, message: err.message })
 
     }
 }
+
+const tokenValidation = async function (req, res) {
+    try {
+        const decodedToken = req.decodedToken
+        return res.status(200).send({ status: true, message: "Token is valid", data: decodedToken })
+    }
+    catch (err) {
+        return res.status(500).send({ status: false, message: err.message })
+    }
+}
+
+module.exports = { createUser, userLogin, tokenValidation }

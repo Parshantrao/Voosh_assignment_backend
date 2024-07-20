@@ -36,6 +36,10 @@ const isValidPassword = function (data) {
     return passwordRegex.test(data);
 };
 
+const isValidDate = function(date) {
+    return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+}
+
 
 module.exports = {
     isValidEmail,
@@ -43,5 +47,6 @@ module.exports = {
     isValidString,
     isValid,
     isValidObjectId,
-    isValidPassword
+    isValidPassword,
+    isValidDate
 }
