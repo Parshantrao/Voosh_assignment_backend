@@ -61,7 +61,7 @@ router.get('/auth/google/callback',
 
       res.cookie('token', token)
     const userData = encodeURIComponent(JSON.stringify(user._id)); 
-    res.redirect(`https://669bf16a710cf50f84257aad-spontaneous.netlify.app/dashboard?user=${userData}`); 
+    res.redirect(`https://main--vooshfrontendassignment.netlify.app/dashboard?user=${userData}`); 
   }
 );
 
