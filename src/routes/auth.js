@@ -1,5 +1,5 @@
 const passport = require('passport');
-const UserModel = require('../models/UsersModel');
+const UserModel = require('../models/usersModel');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 const GOOGLE_CLIENT_ID = "57223644186-rjdpouq8lmj9vss46c88gp8b7v4kjhdf.apps.googleusercontent.com"
