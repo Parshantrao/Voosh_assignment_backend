@@ -59,7 +59,12 @@ router.get('/auth/google/callback',
       }, secretKey, { expiresIn: '1day' });
 
 
-      res.cookie('token', token)
+      res.cookie('token', token, {
+        httpOnly: true, // Prevent JavaScript from accessing the cookie
+        secure: true, // Set to true if using HTTPS
+        sameSite: 'None', // Necessary for cross-origin cookies
+        maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
+    });
     const userData = encodeURIComponent(JSON.stringify(user._id)); 
     res.redirect(`https://main--vooshfrontendassignment.netlify.app/dashboard?user=${userData}`); 
   }
