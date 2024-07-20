@@ -158,9 +158,39 @@ const deleteTask = async function (req, res) {
     }
 }
 
+const updateTaskStatus = async function(req,res){
+    try{
+        const taskId = req.params.taskId
+        const updateToStatus = req.body.status
+        if(!validator.isValidObjectId(taskId)){
+            return res.status(400).send({status:false, message:"Invalid task id."}) 
+        }
+
+        let enumArray = ["TODO","INPROGRESS","DONE"]
+        if(!validator.isValid(updateToStatus)){
+            return res.status(400).send({status:false, message:"Status is missing."}) 
+        }
+        if(!enumArray.includes(updateToStatus)){
+            return res.status(400).send({status:false, message:"Status value must be a valid status."}) 
+        }
+
+        const updatedTask = await TaskModel.findByIdAndUpdate(taskId, {status:updateToStatus},{new:true})
+
+        if(updatedTask){
+            return res.status(200).send({status:true, message:"Task status updated successfuly."})
+        }
+
+        return res.status(400).send({status:false, message:"Task not found."})
+    }
+    catch(err){
+        return res.status(500).send({ status: false, message: "Failed to save data", error: err.message });
+    }
+}
+
 module.exports = {
     createTask,
     getTasks,
     updateTask,
-    deleteTask
+    deleteTask,
+    updateTaskStatus
 }
