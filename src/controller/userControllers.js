@@ -94,7 +94,12 @@ const userLogin = async function (req, res) {
             }, secretKey, { expiresIn: '1day' });
 
 
-            res.cookie('token', token)
+            res.cookie('token', token, {
+                httpOnly: true, // Prevent JavaScript from accessing the cookie
+                secure: true, // Set to true if using HTTPS
+                sameSite: 'None', // Necessary for cross-origin cookies
+                maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
+            });
             // .send({status: true, message: "Loged in successfuly"});
 
             return res.status(200).send({ status: true, message: "Logged in successfuly", data: existedUser._id })
