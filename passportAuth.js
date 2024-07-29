@@ -1,15 +1,12 @@
 const passport = require('passport');
-const UserModel = require('../models/usersModel');
+const UserModel = require('./src/models/usersModel');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-const GOOGLE_CLIENT_ID = "57223644186-rjdpouq8lmj9vss46c88gp8b7v4kjhdf.apps.googleusercontent.com"
-const GOOGLE_CLIENT_SECRET = "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"
-const CALLBACK_URL = "https://voosh-assignment-backend-vv41.onrender.com/auth/google/callback"
 
 passport.use(new GoogleStrategy({
-  clientID: GOOGLE_CLIENT_ID,
-  clientSecret: GOOGLE_CLIENT_SECRET,
-  callbackURL: CALLBACK_URL
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: process.env.CALLBACK_URL_PRODUCTION
 },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -22,7 +19,7 @@ passport.use(new GoogleStrategy({
           first_name: profile.displayName,
           email: profile.emails[0].value
         })
-      
+
         return done(null, newUser)
       }
     }

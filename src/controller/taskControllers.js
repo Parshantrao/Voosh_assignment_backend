@@ -10,7 +10,9 @@ const createTask = async function (req, res) {
             return res.status(400).send({ status: false, message: "Not a valid request body" })
         }
 
-        let { title, description, dueDate, userId } = req.body
+        let { title, description, dueDate } = req.body
+
+        const userId = req.decodedToken.id
 
         // Check for OnjectId
         if(!validator.isValidObjectId(userId)){
@@ -65,7 +67,7 @@ const createTask = async function (req, res) {
 const getTasks = async function (req, res) {
     try {  
 
-        const userId = req.params.userId
+        const userId = req.decodedToken.id
 
         const savedData = await TaskModel.find({ isDeleted: false,userId:userId }).lean()
 

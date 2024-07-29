@@ -3,7 +3,6 @@ const validator = require("../utils/validators");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken")
 
-const secretKey = "./K4lp3d*((secretKEY($#//"
 
 const createUser = async function (req, res) {
     try {
@@ -55,7 +54,7 @@ const createUser = async function (req, res) {
 
             const data = await UserModel.create({ first_name, last_name, email, password: hash })
 
-            return res.status(201).send({ status: true, message: "User created successfuly", data: data })
+            return res.status(201).send({ status: true, message: "User created successfuly" })
         });
 
     } catch (err) {
@@ -91,18 +90,18 @@ const userLogin = async function (req, res) {
             let token = jwt.sign({
                 id: existedUser._id,
                 email: email
-            }, secretKey, { expiresIn: '1day' });
+            }, process.env.JWT_SECRET_KEY, { expiresIn: '1day' });
 
 
             res.cookie('token', token, {
                 httpOnly: true, // Prevent JavaScript from accessing the cookie
-                secure: true, // Set to true if using HTTPS
                 sameSite: 'None', // Necessary for cross-origin cookies
+                secure: true, // Set to true if using HTTPS
                 maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
             });
-            // .send({status: true, message: "Loged in successfuly"});
+            // .sed({stats: true, message: "Loged in successfuly"});
 
-            return res.status(200).send({ status: true, message: "Logged in successfuly", data: existedUser._id })
+            return res.status(200).send({ status: true, message: "Logged in successfuly" })
         }
         else {
             return res.status(400).send({ status: false, message: "Invalid credentials" })
@@ -114,14 +113,34 @@ const userLogin = async function (req, res) {
     }
 }
 
+const userDetails =async function (req,res){
+    try{
+        const userId = req.decodedToken.id
+
+        if(!validator.isValidObjectId(userId)){
+            return res.status(400).send({status:false,message:"User id is not valid"}) 
+        }
+
+        const existedUser = await UserModel.findById(userId)
+        if(!existedUser){
+            return res.status(404).send({status:false, message:'No user found'}) 
+        }
+
+        return res.status(200).send({status:true, data:existedUser._id})
+    }
+    catch(err){
+        return res.status(500).send({ status: false, message: err.message })
+    }
+}
+
 const tokenValidation = async function (req, res) {
     try {
-        const decodedToken = req.decodedToken
-        return res.status(200).send({ status: true, message: "Token is valid", data: decodedToken })
+        
+        return res.status(200).send({ status: true, message: "Token is valid" })
     }
     catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
 
-module.exports = { createUser, userLogin, tokenValidation }
+module.exports = { createUser, userLogin, tokenValidation,userDetails }

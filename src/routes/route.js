@@ -5,13 +5,12 @@ const taskController = require("../controller/taskControllers")
 const userController = require("../controller/userControllers")
 const middleware = require("../middleware/auth");
 const passport = require('passport');
-const jwt=require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
-const secretKey = "./K4lp3d*((secretKEY($#//"
 
 
 router.get("/get", (req, res) => {
-    res.status(200).send({ message: "Working" })
+  res.status(200).send({ message: "Working" })
 })
 
 // ==== Task APIs ====
@@ -20,17 +19,16 @@ router.get("/get", (req, res) => {
 router.post('/tasks', middleware.auth, taskController.createTask);
 
 // Get all tasks
-router.get('/tasks/:userId',middleware.auth, taskController.getTasks);
+router.get('/tasks', middleware.auth, taskController.getTasks);
 
 // Update a specific task by ID
-router.put('/tasks/:taskId',middleware.auth, taskController.updateTask);
+router.put('/tasks/:taskId', middleware.auth, taskController.updateTask);
 
 // Update status of a specific task by ID
-router.put("/tasks/status/:taskId",middleware.auth, taskController.updateTaskStatus) 
+router.put("/tasks/status/:taskId", middleware.auth, taskController.updateTaskStatus)
 
 // Delete a specific task by ID
-router.delete('/tasks/:taskId',middleware.auth, taskController.deleteTask);
-
+router.delete('/tasks/:taskId', middleware.auth, taskController.deleteTask);
 
 
 
@@ -38,6 +36,9 @@ router.delete('/tasks/:taskId',middleware.auth, taskController.deleteTask);
 
 // Create a new user
 router.post('/users', userController.createUser);
+
+// Get user's Info
+router.get("/user", middleware.auth, userController.userDetails)
 
 // User login
 router.post('/login', userController.userLogin);
@@ -54,19 +55,18 @@ router.get('/auth/google/callback',
   (req, res) => {
     const user = req.user;
     let token = jwt.sign({
-        id: user._id,
-        email: user.email
-      }, secretKey, { expiresIn: '1day' });
+      id: user._id,
+      email: user.email
+    }, process.env.JWT_SECRET_KEY, { expiresIn: '1day' });
 
+    res.cookie('token', token, {
+      httpOnly: true, // Prevent JavaScript from accessing the cookie
+      sameSite: 'None', // Necessary for cross-origin cookies
+      secure: true, // Set to true if using HTTPS
+      maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
+    })
 
-      res.cookie('token', token, {
-        httpOnly: true, // Prevent JavaScript from accessing the cookie
-        secure: true, // Set to true if using HTTPS
-        sameSite: 'None', // Necessary for cross-origin cookies
-        maxAge: 24 * 60 * 60 * 1000 // 1 day in milliseconds
-    });
-    const userData = encodeURIComponent(JSON.stringify(user._id)); 
-    res.redirect(`https://main--vooshfrontendassignment.netlify.app/dashboard?user=${userData}`); 
+    res.redirect(process.env.REDIRECT_URL_AFTER_GOOGLE_LOGIN_DPRODUCTION);
   }
 );
 
@@ -76,15 +76,14 @@ router.get('/login-failure', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    req.logout(function(err) {
-        if (err) { return next(err); }
-      });
+  req.logout(function (err) {
+    if (err) { return next(err); }
+  });
 
-    // Clear cookies and session storage
-    res.clearCookie('token'); // Clear the token cookie
-    res.clearCookie('connect.sid'); // Clear the session cookie if using express-session
+  // Clear cookies and session storage
+  res.clearCookie('token'); // Clear the token cookie
+  res.clearCookie('connect.sid'); // Clear the session cookie if using express-session
   
-   
 });
 
 module.exports = router
