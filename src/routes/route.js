@@ -81,9 +81,21 @@ router.get('/logout', (req, res) => {
   });
 
   // Clear cookies and session storage
-  res.clearCookie('token'); // Clear the token cookie
-  res.clearCookie('connect.sid'); // Clear the session cookie if using express-session
-  res.send({message:"Logged out"})
+  res.clearCookie('token', {
+    httpOnly: true,
+    secure: true, // Ensure secure cookies in production
+    sameSite: 'None', // Adjust based on your requirements
+  
+  });
+  res.clearCookie('connect.sid', {
+    httpOnly: true,
+    secure: true, // Ensure secure cookies in production
+    sameSite: 'None', // Adjust based on your requirements
+   
+  });
+
+  res.send({ message: "Logged out" });
 });
+
 
 module.exports = router
