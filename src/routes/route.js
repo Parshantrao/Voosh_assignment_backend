@@ -83,7 +83,7 @@ router.get('/logout', (req, res) => {
   // Clear cookies and session storage
   res.clearCookie('token'); // Clear the token cookie
   res.clearCookie('connect.sid'); // Clear the session cookie if using express-session
-  
+  res.send({message:"Logged out"})
 });
 
 module.exports = router
